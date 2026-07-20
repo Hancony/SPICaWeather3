@@ -36,6 +36,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import me.spica.spicaweather3.route.LocalNavController
 import me.spica.spicaweather3.route.Routes
 import me.spica.spicaweather3.ui.air_quality.AirQualityScreen
+import me.spica.spicaweather3.ui.alert.WeatherAlertScreen
 import me.spica.spicaweather3.ui.city_selector.CitySelectorScreen
 import me.spica.spicaweather3.ui.landscape.LandscapeMainScreen
 import me.spica.spicaweather3.ui.main.MainScreen
@@ -257,6 +258,9 @@ private fun PortraitMainScreen() {
                         }
                         entry<Routes.AirQuality> {
                             AirQualityScreen()
+                        }
+                        entry<Routes.WeatherAlert> { route ->
+                            WeatherAlertScreen(cityId = route.cityId)
                         }
                     }
                 )

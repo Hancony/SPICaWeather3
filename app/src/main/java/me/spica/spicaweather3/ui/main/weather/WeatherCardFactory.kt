@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import me.spica.spicaweather3.common.model.WeatherCardType
 import me.spica.spicaweather3.domain.model.WeatherData
+import me.spica.spicaweather3.route.LocalNavController
+import me.spica.spicaweather3.route.Routes
 import me.spica.spicaweather3.ui.main.cards.AlertCard
 import me.spica.spicaweather3.ui.main.cards.AqiCard
 import me.spica.spicaweather3.ui.main.cards.DailyCard
@@ -33,6 +35,7 @@ object WeatherCardFactory {
   @Composable
   fun CreateCard(
     cardType: WeatherCardType,
+    cityId: String,
     weatherData: WeatherData,
     startAnim: Boolean,
     modifier: Modifier = Modifier
@@ -44,7 +47,14 @@ object WeatherCardFactory {
         startAnim = startAnim
       )
       
-      WeatherCardType.ALERT -> AlertCard(weatherData)
+      WeatherCardType.ALERT -> {
+        val navController = LocalNavController.current
+        AlertCard(
+          weatherData = weatherData,
+          onClick = { navController.add(Routes.WeatherAlert(cityId)) },
+          modifier = modifier
+        )
+      }
       
       WeatherCardType.MINUTELY -> MinutelyCard(
         modifier = modifier,

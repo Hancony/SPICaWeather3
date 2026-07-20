@@ -26,6 +26,10 @@ object Routes {
   @Serializable
   data object AirQuality : NavKey
 
+  // 天气预警详情
+  @Serializable
+  data class WeatherAlert(val cityId: String) : NavKey
+
 }
 
 val LocalNavController = staticCompositionLocalOf<NavBackStack<NavKey>> {

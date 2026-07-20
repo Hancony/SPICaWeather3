@@ -111,6 +111,7 @@ private fun DataPage(
   // 天气卡片网格
   WeatherCardsGrid(
     cards = filteredCards,
+    cityId = city.id,
     weatherData = weatherData,
     onReorder = { reorderedCards ->
       // 仅传递当前可见的已排序卡片，由 DataStore 层负责与不可见卡片合并

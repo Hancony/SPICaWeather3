@@ -47,6 +47,7 @@ import kotlin.random.Random
 @Composable
 fun WeatherCardsGrid(
     cards: List<WeatherCardConfig>,
+    cityId: String,
     weatherData: WeatherData,
     onReorder: (List<WeatherCardConfig>) -> Unit,
     scrollBehavior: ScrollBehavior,
@@ -115,6 +116,7 @@ fun WeatherCardsGrid(
 
                     WeatherCardItem(
                         cardConfig = cardConfig,
+                        cityId = cityId,
                         weatherData = weatherData,
                         delayMillis = delayMillis,
                         durationMillis = durationMillis,

@@ -27,6 +27,7 @@ import sh.calvin.reorderable.ReorderableCollectionItemScope
 @Composable
 fun ReorderableCollectionItemScope.WeatherCardItem(
   cardConfig: WeatherCardConfig,
+  cityId: String,
   weatherData: WeatherData,
   delayMillis: Int,
   durationMillis: Int,
@@ -56,6 +57,7 @@ fun ReorderableCollectionItemScope.WeatherCardItem(
     content = { isAnimEnd ->
       WeatherCardFactory.CreateCard(
         cardType = cardConfig.cardType,
+        cityId = cityId,
         weatherData = weatherData,
         startAnim = isAnimEnd,
         modifier = Modifier.fillMaxWidth()

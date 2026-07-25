@@ -52,6 +52,10 @@ class ScatteredWeatherAppWidget : GlanceAppWidget() {
 
         val cityEntity = database.cityDao().getUserLoc()
         val weatherData = cityEntity?.weather
+        // Gson 可能把 non-null 的 current/forecast.today/airQuality 置为 null（旧数据缺少字段），单独取出并校验
+        val current = weatherData?.current
+        val today = weatherData?.forecast?.today
+        val airQuality = weatherData?.airQuality
 
         provideContent {
             Box(
@@ -60,18 +64,18 @@ class ScatteredWeatherAppWidget : GlanceAppWidget() {
                     .cornerRadius(20.dp)
                     .background(Color(0xCC1B2838))
             ) {
-                if (cityEntity != null && weatherData != null) {
-                    val temp = weatherData.current.temperature
-                    val condition = weatherData.current.condition
-                    val humidity = weatherData.current.humidity
-                    val windScale = weatherData.current.windScale
-                    val windDirText = weatherData.current.windDirectionText
-                    val feelsLike = weatherData.current.feelsLike
-                    val tempMax = weatherData.forecast.today.tempMax
-                    val tempMin = weatherData.forecast.today.tempMin
-                    val sunrise = weatherData.forecast.today.sunrise
-                    val sunset = weatherData.forecast.today.sunset
-                    val aqiCategory = weatherData.airQuality.category
+                if (cityEntity != null && weatherData != null && current != null && today != null && airQuality != null) {
+                    val temp = current.temperature
+                    val condition = current.condition.orEmpty()
+                    val humidity = current.humidity
+                    val windScale = current.windScale.orEmpty()
+                    val windDirText = current.windDirectionText.orEmpty()
+                    val feelsLike = current.feelsLike
+                    val tempMax = today.tempMax
+                    val tempMin = today.tempMin
+                    val sunrise = today.sunrise.orEmpty()
+                    val sunset = today.sunset.orEmpty()
+                    val aqiCategory = airQuality.category.orEmpty()
                     val cityName = cityEntity.name
 
                     // 层1：幽灵背景大字（仅 10% 不透明度）——营造视觉纵深

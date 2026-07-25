@@ -45,6 +45,8 @@ class TodayInfoAppWidget : GlanceAppWidget() {
     val cityEntity = database.cityDao().getUserLoc()
 
     val weatherData = cityEntity?.weather
+    // Gson 可能把 non-null 的 current 置为 null（旧数据缺少字段），单独取出并校验
+    val current = weatherData?.current
 
     Log.e("TodayInfoAppWidget", "provideGlance: 更新小组件 $cityEntity $weatherData")
 
@@ -56,7 +58,7 @@ class TodayInfoAppWidget : GlanceAppWidget() {
           .padding(12.dp),
         contentAlignment = Alignment.Center
       ) {
-        if (cityEntity != null && weatherData != null) {
+        if (cityEntity != null && weatherData != null && current != null) {
           Row(
             modifier = GlanceModifier,
             verticalAlignment = Alignment.CenterVertically,
@@ -80,7 +82,7 @@ class TodayInfoAppWidget : GlanceAppWidget() {
               )
               Row {
                 Text(
-                  text = "${weatherData.current.temperature}",
+                  text = "${current.temperature}",
                   modifier = GlanceModifier,
                   style = TextStyle(
                     fontSize = 54.sp,
@@ -101,7 +103,7 @@ class TodayInfoAppWidget : GlanceAppWidget() {
                   .height(4.dp)
               )
               Text(
-                text = "${weatherData.current.condition} 风速${weatherData.current.windSpeed}公里/小时",
+                text = "${current.condition.orEmpty()} 风速${current.windSpeed}公里/小时",
                 modifier = GlanceModifier,
                 style = TextStyle(
                   fontSize = 14.sp,

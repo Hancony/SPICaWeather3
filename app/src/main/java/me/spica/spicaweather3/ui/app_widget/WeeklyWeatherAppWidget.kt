@@ -46,6 +46,9 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
     // 获取用户位置的天气数据
     val cityEntity = database.cityDao().getUserLoc()
     val weatherData = cityEntity?.weather
+    // Gson 可能把 non-null 的 current/forecast/next7Days 置为 null（旧数据缺少字段），单独取出并校验
+    val current = weatherData?.current
+    val weeklyWeather = weatherData?.forecast?.next7Days?.take(7)
 
     Log.e("WeeklyWeatherAppWidget", "provideGlance: 更新一周天气小组件 $cityEntity")
 
@@ -57,7 +60,7 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
           .padding(16.dp),
         contentAlignment = Alignment.TopStart
       ) {
-        if (cityEntity != null && weatherData != null) {
+        if (cityEntity != null && weatherData != null && current != null && weeklyWeather != null) {
           Column(
             modifier = GlanceModifier.fillMaxSize(),
             verticalAlignment = Alignment.Top,
@@ -80,7 +83,7 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
                 Spacer(modifier = GlanceModifier.height(2.dp))
                 Row {
                   Text(
-                    text = "${weatherData.current.temperature}",
+                    text = "${current.temperature}",
                     style = TextStyle(
                       fontSize = 32.sp,
                       color = ColorProvider(COLOR_WHITE_100)
@@ -100,8 +103,6 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
             Spacer(modifier = GlanceModifier.height(12.dp))
 
             // 一周天气列表
-            val weeklyWeather = weatherData.forecast.next7Days.take(7)
-            
             if (weeklyWeather.isNotEmpty()) {
               Column(
                 modifier = GlanceModifier.fillMaxWidth(),
@@ -120,7 +121,7 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
                       if (day.isToday()) "今天" else day.getDayOfWeekLabel()
                     } catch (e: Exception) {
                       e.printStackTrace()
-                      day.date
+                      day.date.orEmpty()
                     }
                     
                     Box(
@@ -142,7 +143,7 @@ class WeeklyWeatherAppWidget : GlanceAppWidget() {
                       contentAlignment = Alignment.CenterStart
                     ) {
                       Text(
-                        text = day.dayCondition,
+                        text = day.dayCondition.orEmpty(),
                         style = TextStyle(
                           fontSize = 12.sp,
                           color = ColorProvider(COLOR_WHITE_40)
